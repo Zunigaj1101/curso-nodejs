@@ -9,7 +9,7 @@ const folder = process.argv[2] ?? '.' // podemos pasarle como argumentos otros d
 async function ls (directory) { 
     let files
     try {
-        files = await fs.readdir (folder) // lee los archivos en el diretorio
+        files = await fs.readdir (folder) // espera a leer los archivos en el diretorio
     } catch { 
         console.error (`\nNo se puede leer directorio: ${folder}`) 
         process.exit(1)
@@ -27,11 +27,12 @@ async function ls (directory) {
         }
 
         const isDirectory = fileStats.isDirectory() // compruebo si es un directorio
-        const fileType = isDirectory ? 'd' : 'f'
-        const fileSize = fileStats.size // tamaño del archivo
-        const fileModified = fileStats.mtime.toLocaleString() // Ultima modificacion del archivo
+        const fileType = isDirectory ? 'dir:'.padEnd(4) : 'file:'
+        const fileSize = fileStats.size.toString().padEnd(10) // tamaño del archivo
+        const fileModified = fileStats.mtime.toLocaleString() // Ultima modificacion del archiv
+        file = file.padEnd(30)
 
-        return `${fileType} ${file.padEnd(20)} ${fileSize.toString().padStart(10)} ${fileModified}`
+        return `${fileType} ${file} ${fileSize} ${fileModified}`
     });
 
     const filesInfo = await Promise.all (filePromises)
