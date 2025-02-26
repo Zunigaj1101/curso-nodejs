@@ -1,7 +1,7 @@
 // Importacion de modulos con CommonJS
 const fs = require ('node:fs/promises') 
 const path = require ('node:path')
-
+const color = require ('picocolors')
 
 const folder = process.argv[2] ?? '.' // podemos pasarle como argumentos otros directorios
 
@@ -11,7 +11,7 @@ async function ls (directory) {
     try {
         files = await fs.readdir (folder) // espera a leer los archivos en el diretorio
     } catch { 
-        console.error (`\nNo se puede leer directorio: ${folder}`) 
+        console.error (color.red(`\nNo se puede leer directorio: ${folder}`))
         process.exit(1)
     }
     
@@ -27,12 +27,12 @@ async function ls (directory) {
         }
 
         const isDirectory = fileStats.isDirectory() // compruebo si es un directorio
-        const fileType = isDirectory ? 'dir:'.padEnd(4) : 'file:'
+        const fileType = isDirectory ? 'dir:'.padEnd(5) : 'file:'
         const fileSize = fileStats.size.toString().padEnd(10) // tamaño del archivo
         const fileModified = fileStats.mtime.toLocaleString() // Ultima modificacion del archiv
         file = file.padEnd(30)
 
-        return `${fileType} ${file} ${fileSize} ${fileModified}`
+        return `${color.magenta(fileType)} ${color.blue(file)} ${color.gray(fileSize)} ${color.greenBright(fileModified)}`
     });
 
     const filesInfo = await Promise.all (filePromises)
