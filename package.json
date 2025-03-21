@@ -4,7 +4,9 @@
   "description": "curso de NodeJS Hecho por Midudev",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:1": "node --watch clase-2/01-http.js",
+    "dev:2": "node --watch clase-2/02-routing.js",
+    "dev:3": "node --watch clase-2/03-express.js"
   },
   "keywords": [
     "curso",
@@ -15,6 +17,7 @@
   "author": "Midudev",
   "license": "ISC",
   "dependencies": {
+    "express": "4.21.2",
     "picocolors": "1.1.1"
   }
 }

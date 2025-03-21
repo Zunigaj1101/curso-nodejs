@@ -1,6 +1,5 @@
 const http = require ('node:http');
 const dittoJSON = require('./pokemon/ditto.json');
-const { json } = require('node:stream/consumers');
 const desiredPort = 1234;
 
 const processResquest = (req, res) => {
