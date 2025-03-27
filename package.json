@@ -19,5 +19,14 @@
   "dependencies": {
     "express": "4.21.2",
     "picocolors": "1.1.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zunigaj1101/curso-nodejs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Zunigaj1101/curso-nodejs/issues"
+  },
+  "homepage": "https://github.com/Zunigaj1101/curso-nodejs#readme"
 }
