@@ -41,19 +41,15 @@ export class MovieModels {
         return true;
     }
 
-    static async update ({ id, input, index}) {
-        if (id) {
-            const movieIndex = dataMovies.findIndex (movie => movie.id === id)
-            if (movieIndex < 0) return null;
-            return movieIndex;
-        }
+    static async update ({ id, input}) {
+        const movieIndex = dataMovies.findIndex (movie => movie.id === id)
 
         const updateMovie = {
-            ...dataMovies[index], /// pelicula actual 
-            ...input.data // datos a actualizar
+            ...dataMovies[movieIndex], /// pelicula actual 
+            ...input // datos a actualizar
         }
-
-        dataMovies[index] = updateMovie
+        
+        dataMovies[movieIndex] = updateMovie
         return updateMovie;
     }
 }

@@ -1,7 +1,7 @@
 import { Router } from "express"; 
 
 import { validateMovie, validatePartialMovie } from '../schemes/scheme.js';
-import { MovieModels } from "../controllers/movie.js";
+import { MovieModels } from "../models/movie.js";
 
 export const moviesRouter = Router ()
 
@@ -38,18 +38,13 @@ moviesRouter.delete ('/:id', (req, res) => {
 })
 
 moviesRouter.patch('/:id', async (req, res) => {
-    const { id } = req.params
-    const movieIndex = await MovieModels.update({ id })
-    if (movieIndex === null) {
-        return res.status(400).json({message: 'Movie no found'})
-    }
-
     const result = validatePartialMovie(req.body);
-
     if (result.error) {
-      return res.status(400).json({ error: JSON.parse(result.error.message) })
+        return res.status(400).json({ error: JSON.parse(result.error.message) })
     }
+    
+    const { id } = req.params
+    const updatedMovie = await MovieModels.update({ id, input: result.data})
 
-    const updateMovie = await MovieModels.update({ input: result, index: movieIndex})
-    return res.json(updateMovie);
+    return res.json(updatedMovie);
 })
