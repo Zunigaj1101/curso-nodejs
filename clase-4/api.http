@@ -20,6 +20,9 @@ Content-Type: application/json
   "genre": ["Crime", "Drama"]
 }
 
+### Borrar una pelicula
+DELETE http://localhost:1234/movies/c8a7d63f-3b04-44d3-9d95-8782fd7dcfaf
+
 ### Actualizar mi pelicula
 PATCH http://localhost:1234/movies/c8a7d63f-3b04-44d3-9d95-8782fd7dcfaf
 Content-Type: application/json
@@ -28,3 +31,4 @@ Content-Type: application/json
   "title": "QUE ONDAAA",
   "year": 2010
 }
+
