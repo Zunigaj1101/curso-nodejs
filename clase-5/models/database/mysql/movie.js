@@ -34,6 +34,10 @@ async function addGenresMovies (uuid, genre) {
     }
 }
 
+async function deleteGenresMovies (uuid,) {
+    await connection.query(`DELETE FROM movies_genres WHERE movie_id = UUID_TO_BIN(?);`, [uuid]);
+}
+
 export class MovieModels {
     static async getAll ({ genre }) {
 
@@ -88,15 +92,7 @@ export class MovieModels {
     static async create ({ input }) {
 
         // Destructuro el input para obtener los valores
-        const {
-            title,
-            year,
-            director,
-            duration,
-            poster,
-            genre,
-            rate
-        } = input
+        const { title, year, director, duration, poster, genre, rate } = input
 
         try {
             // llamo a la BD para que haga el UUID
@@ -146,6 +142,47 @@ export class MovieModels {
     }
 
     static async update ({ id, input }) {
-        
+        try {
+            if (input.genre) {
+                // eliminar los gerneros
+                await deleteGenresMovies (id);
+                // añadir lo generos
+                await addGenresMovies (id, input.genre);
+            }
+
+            // los datos de la pelicula actual
+            const [ currentMovie ] = await connection.query (`
+                SELECT BIN_TO_UUID(m.id) as id, m.title, m.year, m.director, m.duration, m.poster, m.rate,
+                       GROUP_CONCAT(g.name) as genre
+                FROM movie AS m 
+                JOIN movies_genres AS mg ON mg.movie_id = m.id 
+                JOIN genre AS g ON mg.genre_id = g.id
+                WHERE m.id = UUID_TO_BIN(?)
+                GROUP BY m.id ; 
+            `, [id])
+            
+            // actualizar los datos con el input
+            const currentData = proccesMovies (currentMovie)
+            const updatedMovie = {
+                ...currentData[0],
+                ...input
+            };
+
+            const { title, year, director, duration, poster, genre, rate} = updatedMovie
+
+            // actualizacion de la bd
+            const [result] = await connection.query(`
+                UPDATE movie
+                SET title = ?, year = ?, director = ?, duration = ?, poster = ?, rate = ?
+                WHERE id = UUID_TO_BIN(?);
+            `, [title, year, director, duration, poster, rate, id]);
+
+            if (result.affectedRows === 0) return { error: {message: "Movie not updated"} }
+    
+            return updatedMovie
+        } catch (error ){
+            console.error (error.message, error.sql)
+            return { error: {message: "Movie not updated"} }
+        }
     }
 }

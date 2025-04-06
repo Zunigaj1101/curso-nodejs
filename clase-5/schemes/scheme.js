@@ -1,4 +1,27 @@
-import z from 'zod'
+import mysql from "mysql2/promise";
+import z from 'zod';
+import dotenv from 'dotenv';
+
+dotenv.config()
+
+const DEFAULT_CONFING = {
+    host: process.env.LOCAL_DB_HOST,
+    user: process.env.LOCAL_DB_USER,
+    port: process.env.LOCAL_DB_PORT,
+    password: process.env.LOCAL_DB_PASSWORD,
+    database: process.env.LOCAL_DB_NAME
+};
+const connection = await mysql.createConnection(DEFAULT_CONFING)
+
+const getGenres = async () => {
+    const [ genres ] = await connection.query(`
+        SELECT name FROM genre;    
+    `)
+    const result = genres.map( genre => { return genre.name})
+    return result
+}
+
+const curretGenres = await getGenres() 
 
 const moviesSchema = z.object ({
     id: z.string().uuid().optional(),
@@ -13,13 +36,7 @@ rate: z.number().min(0).max(10).optional(),
 poster: z.string().url({
     message: 'Poster must be a valid URL.'
 }),
-genre: z.array(z.enum([
-    'Action', 'Sci-Fi', 'Terror', 'Comedy', 'Drama', 'Romance', 
-    'Documentary', 'Animation', 'Fantasy', 'Adventure', 'Thriller', 
-    'Mystery', 'Crime', 'Family', 'Music', 'War', 'History', 
-    'Western', 'Biography', 'Sport', 'Musical', 'Short', 'News', 
-    'Reality-TV', 'Talk-Show'
-]))
+genre: z.array(z.enum(curretGenres)).min(1, { message: 'At least one genre is required.' })
 });
 
 export function validateMovie (object) {
