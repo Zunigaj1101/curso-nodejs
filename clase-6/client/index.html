@@ -10,16 +10,28 @@
             display: grid;
             place-content: center;
             height: 100vh;
-            padding: 36px;
+        }
+        #time {
+            box-sizing: border-box;
+            font-size: 10px;
+            border: solid transparent 2px;
+            margin-left: 5px;
+            border-radius: 3px;
+            padding: 1px;
+            background: #222;
         }
         #messages {
             list-style-type: none;
             margin: 0;
             padding: 0;
-
+            overflow: scroll;
+            height: 100%;
+            scroll-behavior: smooth;
+            padding-bottom: 48px ;
         }
         #messages > li {
             padding: .5rem 1rem;
+
         }
         #messages > li:nth-child(odd){
             background: #000;
@@ -68,17 +80,32 @@
         import { io } from "https://cdn.socket.io/4.8.1/socket.io.esm.min.js"
 
         // Conetar con el servidor Socket.IO en el mismo dominio y puerto
-        const socket = io()
+        const socket = io({
+            auth: {
+                user:'juanito',
+                serverOffset: 0
+            }
+        })
 
-
+        
         // me traigo el formulario, input
         const form = document.getElementById('form')
         const input = document.getElementById('input')
         const messages = document.getElementById('messages')
 
-        socket.on ('chat message', (msg) => {
-            const item = `<li>${msg}</li>`
+        const getUsername = async () => {
+            const userName = localStorage.getItem('username')
+            if (userName){
+                console.log (userName)
+            }
+        }
+
+        // 
+        socket.on ('chat message', (msg, date, newServerOffset) => {
+            const time = date.substring(11, 16)
+            const item = `<li>${msg} <span id='time'>${time}</span></li>`
             messages.insertAdjacentHTML('beforeend', item)
+            socket.auth.serverOffset = newServerOffset
         })
 
         // escuchar el evento 'submit' del boton enviar
