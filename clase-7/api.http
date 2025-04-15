@@ -1,0 +1,20 @@
+### Prueba
+POST http://localhost:1234/login
+
+### Registro de usuario
+POST http://localhost:1234/register
+Content-Type: application/json
+
+{
+    "username": "JOseeee",
+    "password": "123456"
+}
+
+### Inicio de sesion
+POST http://localhost:1234/login
+Content-Type: application/json
+
+{
+    "username": "JOseeee",
+    "password": "123456"
+}
